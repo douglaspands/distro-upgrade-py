@@ -10,7 +10,7 @@ from uuid import uuid4
 
 class DistroUpgrade:
     CMD_OK = 0
-    MANAGERS_SUPPORTED = ("apt", "pacman", "yay", "snap", "flatpak", "brew")
+    MANAGERS_SUPPORTED = ("apt", "pacman", "yay", "snap", "flatpak", "brew", "dnf")
     SH_SNAP_REMOVE = r"""
 set -eu
 snap list --all | awk '/disabled/{print $1, $3}' |
@@ -95,6 +95,12 @@ snap list --all | awk '/disabled/{print $1, $3}' |
     def _yay_clean(self):
         return ["yay --noconfirm -Rs $(yay -Qtdq)", "yay --noconfirm -Sc"]
 
+    def _dnf_upgrade(self) -> list[str]:
+        return ["sudo dnf update -y", "sudo dnf upgrade -y"]
+
+    def _dnf_clean(self):
+        return ["sudo dnf autoremove -y", "sudo dnf clean all -y"]
+
     def __enter__(self):
         return self
 
@@ -124,7 +130,8 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._flatpak_upgrade() + self._flatpak_clean()
         if app in ("all", "brew") and "brew" in choices:
             cmds += self._brew_upgrade() + self._brew_clean()
-
+        if app in ("all", "dnf") and "dnf" in choices:
+            cmds += self._dnf_upgrade() + self._dnf_clean()
         if not cmds:
             raise ValueError(f"Invalid app: {app}")
 

@@ -124,14 +124,14 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._pacman_upgrade() + self._pacman_clean()
         if app in ("all", "yay") and "yay" in choices:
             cmds += self._yay_upgrade() + self._yay_clean()
+        if app in ("all", "dnf") and "dnf" in choices:
+            cmds += self._dnf_upgrade() + self._dnf_clean()
         if app in ("all", "snap") and "snap" in choices:
             cmds += self._snap_upgrade() + self._snap_clean()
         if app in ("all", "flatpak") and "flatpak" in choices:
             cmds += self._flatpak_upgrade() + self._flatpak_clean()
         if app in ("all", "brew") and "brew" in choices:
             cmds += self._brew_upgrade() + self._brew_clean()
-        if app in ("all", "dnf") and "dnf" in choices:
-            cmds += self._dnf_upgrade() + self._dnf_clean()
         if not cmds:
             raise ValueError(f"Invalid app: {app}")
 

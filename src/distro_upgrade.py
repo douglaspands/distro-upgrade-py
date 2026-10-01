@@ -62,8 +62,8 @@ snap list --all | awk '/disabled/{print $1, $3}' |
 
     def _brew_upgrade(self):
         return [
-            "brew update",
-            "brew upgrade",
+            "brew update -f",
+            "brew upgrade -y",
         ]
 
     def _brew_clean(self):
